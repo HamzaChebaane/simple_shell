@@ -2,19 +2,19 @@
 
 /**
  * interactive - returns true if shell is interactive mode
- * @info: struct address
+ * @data: struct address
  *
  * Return: 1 if interactive mode, 0 otherwise
  */
-int interactive(info_t *info)
+int interactive(data_t *data)
 {
-	return (isatty(STDIN_FILENO) && info->readfd <= 2);
+	return (isatty(STDIN_FILENO) && data->readfd <= 2);
 }
 
 /**
- * is_delim - checks if character is a delimeter
- * @c: the char to check
- * @delim: the delimeter string
+ * is_delim - checks if character
+ * @c: char
+ * @delim: string
  * Return: 1 if true, 0 if false
  */
 int is_delim(char c, char *delim)
