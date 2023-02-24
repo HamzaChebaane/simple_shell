@@ -48,9 +48,9 @@ int hsh(data_t *data, char **av)
  * @data: the parameter & return data struct
  *
  * Return: -1 if bulk not found,
- * 	0 if bulk executed successfully,
- * 	1 if bulk found but not successful,
- * 	2 if bulk signals exit()
+ * 0 if bulk executed successfully,
+ * 1 if bulk found but not successful,
+ * 2 if bulk signals exit()
  */
 int find_bulk(data_t *data)
 {

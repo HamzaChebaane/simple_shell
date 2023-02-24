@@ -117,13 +117,13 @@ int replace_vars(data_t *data)
 		if (!_strcmp(data->argv[i], "$?"))
 		{
 			replace_string(&(data->argv[i]),
-					_strdup(cnv_num (data->status, 10, 0)));
+					_strdup(cnv_num(data->status, 10, 0)));
 			continue;
 		}
 		if (!_strcmp(data->argv[i], "$$"))
 		{
 			replace_string(&(data->argv[i]),
-					_strdup(cnv_num (getpid(), 10, 0)));
+					_strdup(cnv_num(getpid(), 10, 0)));
 			continue;
 		}
 		node = node_starts_with(data->env, &data->argv[i][1], '=');

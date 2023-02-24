@@ -93,7 +93,7 @@ int pr_d(int input, int fd)
  *
  * Return: string
  */
-char *cnv_num (long int num, int base, int flags)
+char *cnv_num(long int num, int base, int flags)
 {
 	static char *array;
 	static char buffer[50];

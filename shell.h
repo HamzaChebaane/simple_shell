@@ -170,7 +170,7 @@ int _atens(char *);
 int _erratens(char *);
 void printerr(data_t *, char *);
 int pr_d(int, int);
-char *cnv_num (long int, int, int);
+char *cnv_num(long int, int, int);
 void rm_com(char *);
 
 /* toem_bulk.c */
