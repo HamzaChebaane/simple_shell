@@ -1,12 +1,12 @@
 #include "shell.h"
 
 /**
- * _erratens - converts a string to an integer
+ * _erratoi - converts a string to an integer
  * @s: the string to be converted
  * Return: 0 if no numbers in string, converted number otherwise
- *       -1 on error
+ * -1 on error
  */
-int _erratens(char *s)
+int _erratoi(char *s)
 {
 	int i = 0;
 	unsigned long int result = 0;
@@ -29,31 +29,31 @@ int _erratens(char *s)
 }
 
 /**
- * printerr - prints an error message
- * @data: the parameter
- * @estr: string
- * Return: 0 if no numbers in string, otherwise
+ * print_error - prints an error message
+ * @info: the parameter & return info struct
+ * @estr: string containing specified error type
+ * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void printerr(data_t *data, char *estr)
+void print_error(info_t *info, char *estr)
 {
-	_print_puts(data->fname);
-	_print_puts(": ");
-	pr_d(data->line_count, STDERR_FILENO);
-	_print_puts(": ");
-	_print_puts(data->argv[0]);
-	_print_puts(": ");
-	_print_puts(estr);
+	_eputs(info->fname);
+	_eputs(": ");
+	print_d(info->line_count, STDERR_FILENO);
+	_eputs(": ");
+	_eputs(info->argv[0]);
+	_eputs(": ");
+	_eputs(estr);
 }
 
 /**
- * pr_d - function prints a decimal (integer) number (base 10)
+ * print_d - function prints a decimal (integer) number (base 10)
  * @input: the input
  * @fd: the filedescriptor to write to
  *
  * Return: number of characters printed
  */
-int pr_d(int input, int fd)
+int print_d(int input, int fd)
 {
 	int (*__putchar)(char) = _putchar;
 	int i, count = 0;
@@ -86,14 +86,14 @@ int pr_d(int input, int fd)
 }
 
 /**
- * cnv_num  - converter function
+ * convert_number - converter function, a clone of itoa
  * @num: number
  * @base: base
  * @flags: argument flags
  *
  * Return: string
  */
-char *cnv_num(long int num, int base, int flags)
+char *convert_number(long int num, int base, int flags)
 {
 	static char *array;
 	static char buffer[50];
@@ -122,12 +122,12 @@ char *cnv_num(long int num, int base, int flags)
 }
 
 /**
- * rm_com - function replaces first instance of '#' with '\0'
- * @buf: address
+ * remove_comments - function replaces first instance of '#' with '\0'
+ * @buf: address of the string to modify
  *
  * Return: Always 0;
  */
-void rm_com(char *buf)
+void remove_comments(char *buf)
 {
 	int i;
 

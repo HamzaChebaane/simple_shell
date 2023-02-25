@@ -23,12 +23,12 @@
 #define CMD_AND		2
 #define CMD_CHAIN	3
 
-/* for cnv_num () */
+/* for convert_number() */
 #define CONVERT_LOWERCASE	1
 #define CONVERT_UNSIGNED	2
 
-/* 1 if using system gline() */
-#define USE_GLINE 0
+/* 1 if using system getline() */
+#define USE_GETLINE 0
 #define USE_STRTOK 0
 
 #define HIST_FILE	".simple_shell_history"
@@ -51,9 +51,9 @@ typedef struct liststr
 } list_t;
 
 /**
- * struct passdata - contains pseudo-arguements to pass into a function,
+ * struct passinfo - contains pseudo-arguements to pass into a function,
  * allowing uniform prototype for function pointer struct
- * @arg: a string generated from gline containing arguements
+ * @arg: a string generated from getline containing arguements
  * @argv:an array of strings generated from arg
  * @path: a string path for the current command
  * @argc: the argument count
@@ -72,7 +72,7 @@ typedef struct liststr
  * @readfd: the fd from which to read line input
  * @histcount: the history line number count
  */
-typedef struct passdata
+typedef struct passinfo
 {
 	char *arg;
 	char **argv;
@@ -93,43 +93,43 @@ typedef struct passdata
 	int cmd_buf_type; /* CMD_type ||, &&, ; */
 	int readfd;
 	int histcount;
-} data_t;
+} info_t;
 
-#define DATA_INIT \
+#define INFO_INIT \
 {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
 		0, 0, 0}
 
 /**
- * struct bulk - contains string
- * @type: command flag
- * @func: function
+ * struct builtin - contains a builtin string and related function
+ * @type: the builtin command flag
+ * @func: the function
  */
-typedef struct bulk
+typedef struct builtin
 {
 	char *type;
-	int (*func)(data_t *);
-} bulk_table;
+	int (*func)(info_t *);
+} builtin_table;
 
 
 /* toem_shloop.c */
-int hsh(data_t *, char **);
-int find_bulk(data_t *);
-void find_cmd(data_t *);
-void fork_cmd(data_t *);
+int hsh(info_t *, char **);
+int find_builtin(info_t *);
+void find_cmd(info_t *);
+void fork_cmd(info_t *);
 
 /* toem_parser.c */
-int is_cmd(data_t *, char *);
+int is_cmd(info_t *, char *);
 char *dup_chars(char *, int, int);
-char *find_path(data_t *, char *, char *);
+char *find_path(info_t *, char *, char *);
 
 /* loophsh.c */
 int loophsh(char **);
 
-/* toem_error.c */
-void _print_puts(char *);
+/* toem_errors.c */
+void _eputs(char *);
 int _eputchar(char);
-int _putinfd(char c, int fd);
-int _putiinsfd(char *str, int fd);
+int _putfd(char c, int fd);
+int _putsfd(char *str, int fd);
 
 /* toem_string.c */
 int _strlen(char *);
@@ -143,7 +143,7 @@ char *_strdup(const char *);
 void _puts(char *);
 int _putchar(char);
 
-/* toem_ex.c */
+/* toem_exits.c */
 char *_strncpy(char *, char *, int);
 char *_strncat(char *, char *, int);
 char *_strchr(char *, char);
@@ -160,60 +160,60 @@ void *_realloc(void *, unsigned int, unsigned int);
 /* toem_memory.c */
 int bfree(void **);
 
-/* toem_atens.c */
-int interactive(data_t *);
+/* toem_atoi.c */
+int interactive(info_t *);
 int is_delim(char, char *);
-int _alpha(int);
-int _atens(char *);
+int _isalpha(int);
+int _atoi(char *);
 
-/* toem_error.c */
-int _erratens(char *);
-void printerr(data_t *, char *);
-int pr_d(int, int);
-char *cnv_num(long int, int, int);
-void rm_com(char *);
+/* toem_errors1.c */
+int _erratoi(char *);
+void print_error(info_t *, char *);
+int print_d(int, int);
+char *convert_number(long int, int, int);
+void remove_comments(char *);
 
-/* toem_bulk.c */
-int _exits(data_t *);
-int _cd(data_t *);
-int _help(data_t *);
+/* toem_builtin.c */
+int _myexit(info_t *);
+int _mycd(info_t *);
+int _myhelp(info_t *);
 
-/* toem_bulk1.c */
-int _history(data_t *);
-int _malias(data_t *);
+/* toem_builtin1.c */
+int _myhistory(info_t *);
+int _myalias(info_t *);
 
-/*toem_gline.c */
-ssize_t get_input(data_t *);
-int _gline(data_t *, char **, size_t *);
-void sHand(int);
+/*toem_getline.c */
+ssize_t get_input(info_t *);
+int _getline(info_t *, char **, size_t *);
+void sigintHandler(int);
 
-/* toem_getdata.c */
-void clear_data(data_t *);
-void set_data(data_t *, char **);
-void free_data(data_t *, int);
+/* toem_getinfo.c */
+void clear_info(info_t *);
+void set_info(info_t *, char **);
+void free_info(info_t *, int);
 
-/* toem_env.c */
-char *_genv(data_t *, const char *);
-int _env(data_t *);
-int _msenv(data_t *);
-int _muenv(data_t *);
-int pop_env(data_t *);
+/* toem_environ.c */
+char *_getenv(info_t *, const char *);
+int _myenv(info_t *);
+int _mysetenv(info_t *);
+int _myunsetenv(info_t *);
+int populate_env_list(info_t *);
 
-/* toem_genv.c */
-char **g_env(data_t *);
-int _unsenv(data_t *, char *);
-int _senv(data_t *, char *, char *);
+/* toem_getenv.c */
+char **get_environ(info_t *);
+int _unsetenv(info_t *, char *);
+int _setenv(info_t *, char *, char *);
 
-/* toem_hist.c */
-char *gt_hfile(data_t *data);
-int wr_his(data_t *data);
-int rd_hist(data_t *data);
-int b_history(data_t *data, char *buf, int linecount);
-int r_history(data_t *data);
+/* toem_history.c */
+char *get_history_file(info_t *info);
+int write_history(info_t *info);
+int read_history(info_t *info);
+int build_history_list(info_t *info, char *buf, int linecount);
+int renumber_history(info_t *info);
 
-/* toem_list.c */
-list_t *add_nd(list_t **, const char *, int);
-list_t *add_nd_end(list_t **, const char *, int);
+/* toem_lists.c */
+list_t *add_node(list_t **, const char *, int);
+list_t *add_node_end(list_t **, const char *, int);
 size_t print_list_str(const list_t *);
 int delete_node_at_index(list_t **, unsigned int);
 void free_list(list_t **);
@@ -226,10 +226,10 @@ list_t *node_starts_with(list_t *, char *, char);
 ssize_t get_node_index(list_t *, list_t *);
 
 /* toem_vars.c */
-int is_chain(data_t *, char *, size_t *);
-void check_chain(data_t *, char *, size_t *, size_t, size_t);
-int replace_alias(data_t *);
-int replace_vars(data_t *);
+int is_chain(info_t *, char *, size_t *);
+void check_chain(info_t *, char *, size_t *, size_t, size_t);
+int replace_alias(info_t *);
+int replace_vars(info_t *);
 int replace_string(char **, char *);
 
 #endif
